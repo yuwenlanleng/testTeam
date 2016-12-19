@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/yz-inside-guide-server">
+    <!--<Resource driverClassName="com.mysql.jdbc.Driver" factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory" maxActive="64" maxIdle="32" maxWait="5000" minIdle="16" name="jdbc/yz-inside-guide" password="root" type="javax.sql.DataSource" url="jdbc:mysql://172.16.100.150/yoyo?useUnicode=true&amp;characterEncoding=utf-8" username="root"/>-->
+</Context>

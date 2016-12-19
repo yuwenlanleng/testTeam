@@ -1,0 +1,957 @@
+/*
+ * yzInsidePanel.java
+ * 
+ * Copyright(c) 2007-2016 by Yingzhi Tech
+ * All Rights Reserved
+ * 
+ * Created at 2016-09-27 13:49:14
+ */
+package com.nazca.inside.guide.client.ui.guide;
+
+import com.nazca.inside.guide.client.agent.entry.CreateEntryAgent;
+import com.nazca.inside.guide.client.agent.entry.DeleteEntryAgent;
+import com.nazca.inside.guide.client.agent.entry.DownEntryAgent;
+import com.nazca.inside.guide.client.agent.entry.ModifyEntryAgent;
+import com.nazca.inside.guide.client.agent.entry.QueryEntryByStateAgent;
+import com.nazca.inside.guide.client.agent.entry.QueryEntryByStateLocalAgent;
+import com.nazca.inside.guide.client.agent.entry.QueryEntrytAgent;
+import com.nazca.inside.guide.client.agent.entry.QueryEntrytListAgent;
+import com.nazca.inside.guide.client.agent.entry.QueryEntrytLocalAgent;
+import com.nazca.inside.guide.client.agent.entry.UpEntryAgent;
+import com.nazca.inside.guide.client.listener.AgentListener;
+import com.nazca.inside.guide.client.ui.DeleteOperationPanel;
+import com.nazca.inside.guide.client.ui.Destructable;
+import com.nazca.inside.guide.client.ui.NGroupListNodePane;
+import com.nazca.inside.guide.client.ui.SimpleOperationPanel;
+import com.nazca.inside.guide.client.ui.model.EntryTableModel;
+import com.nazca.inside.guide.client.util.InsideGuideResourceUtil;
+import com.nazca.inside.guide.common.enums.EntryTypeEnum;
+import com.nazca.inside.guide.common.model.Entry;
+import com.nazca.inside.guide.common.model.EntryTableModelWrap;
+import com.nazca.niis.client.ui.tabs.AbstractAppTabPanel;
+import com.nazca.sql.PageResult;
+import com.nazca.ui.CellItem;
+import com.nazca.ui.NListSelectionEvent;
+import com.nazca.ui.NListSelectionListener;
+import com.nazca.ui.NWaitingPanel;
+import com.nazca.ui.laf.border.IconLabelBorder;
+import com.nazca.ui.pagination.PaginationListener;
+import com.nazca.ui.pagination.TablePageSession;
+import com.nazca.ui.util.CardLayoutWrapper;
+import java.awt.Image;
+import java.util.List;
+import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+/**
+ *
+ * @author pengruirui
+ */
+public class YzInsidePanel extends AbstractAppTabPanel implements Destructable {
+    private Image activeIcon
+            = InsideGuideResourceUtil.readImage("system-tab-active.png");
+    private Image inactiveIcon
+            = InsideGuideResourceUtil.readImage("system-tab-inactive.png");
+    private JPanel userPane = null;
+    private IconLabelBorder leftBorder = null;
+    private IconLabelBorder rightBorder = null;
+    private CardLayoutWrapper rightCard = null;
+    private CardLayoutWrapper leftCard = null;
+    private Entry curEntry;//项目列表
+    private EntryTableModelWrap entryTableModelWrap;//列表清单
+    private QueryEntrytAgent queryEntrytAgent = null;//所有内容
+    private QueryEntrytLocalAgent entrytLocalAgent = null;//所有local
+    private QueryEntryByStateAgent queryEntryByStateAgent = null;//不同状态
+    private QueryEntryByStateLocalAgent entryByStateLocalAgent = null;//不同状态local
+    private QueryEntrytListAgent queryEntrytListAgent = null;//列表清单
+    private DeleteEntryAgent deleteEntryAgent = null;
+    private CreateEntryAgent createEntryAgent = null;
+    private ModifyEntryAgent modifyEntryAgent = null;
+    private DownEntryAgent downEntryAgent = null;
+    private UpEntryAgent upEntryAgent = null;
+    private EntryTableModel entryTableModelByState = new EntryTableModel();
+    private long queryEntrySeq = 0;
+    private long queryEntryListSeq = 0;
+    private long queryEntryListBySatetSeq = 0;
+    private static final String ALL_List = "全部";
+    private EntryTypeEnum curEntryTypeEnum = null;
+    private List<Entry> resultLocal=null;
+    private List<EntryTableModelWrap> listResult=null;
+    private List<Entry> entryList=null;
+    private String lineCount=null;
+    private int pageCount=0;
+
+
+    /**
+     * Creates new form yzInsidePanel
+     */
+    public YzInsidePanel() {
+        initComponents();
+        initUI();
+        setTabText("内部管理");
+        initAgentAndListener();
+        initModel();//表格
+        onInit();//查询  返回List<Entry>
+    }
+
+
+    private void initUI() {
+        leftBorder = new IconLabelBorder(getClass().getResource(
+                "/com/nazca/inside/guide/client/ui/res/logo-32.png"), "所有申请");
+        rightBorder = new IconLabelBorder(getClass().getResource(
+                "/com/nazca/inside/guide/client/ui/res/logo-32.png"), "申请信息");
+        leftPanel.setBorder(leftBorder);
+        rightPanel.setBorder(rightBorder);
+        leftCard = new CardLayoutWrapper(leftWaitjPanel);
+        rightCard= new CardLayoutWrapper(rightWaitjPanel);
+    }
+    private void initModel() {
+        EntryTable.setModel(entryTableModelByState);
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jSplitPane1 = new javax.swing.JSplitPane();
+        leftPanel = new javax.swing.JPanel();
+        leftWaitjPanel = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        EntryList = new com.nazca.ui.NGroupList();
+        nWaitingPanel1 = new com.nazca.ui.NWaitingPanel();
+        jToolBar2 = new javax.swing.JToolBar();
+        stateRefreshBtn = new javax.swing.JButton();
+        rightPanel = new javax.swing.JPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        refreshBtu = new javax.swing.JButton();
+        addBtu = new javax.swing.JButton();
+        modifyBtu = new javax.swing.JButton();
+        deleteBtu = new javax.swing.JButton();
+        upBtu = new javax.swing.JButton();
+        downBtu = new javax.swing.JButton();
+        rightWaitjPanel = new javax.swing.JPanel();
+        nWaitingPanel2 = new com.nazca.ui.NWaitingPanel();
+        antialiasedLabel1 = new com.nazca.ui.AntialiasedLabel();
+        messagejPanel = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        EntryTable = new javax.swing.JTable();
+        pagePane = new com.nazca.ui.pagination.PaginationPanel();
+
+        setLayout(new java.awt.BorderLayout());
+
+        jSplitPane1.setResizeWeight(0.2);
+        jSplitPane1.setMinimumSize(new java.awt.Dimension(0, 0));
+        jSplitPane1.setOneTouchExpandable(true);
+
+        leftPanel.setMinimumSize(new java.awt.Dimension(0, 0));
+        leftPanel.setLayout(new java.awt.BorderLayout());
+
+        leftWaitjPanel.setLayout(new java.awt.CardLayout());
+
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jScrollPane1.setHorizontalScrollBar(null);
+        jScrollPane1.setMinimumSize(new java.awt.Dimension(0, 0));
+        jScrollPane1.setViewportView(EntryList);
+
+        jPanel3.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        leftWaitjPanel.add(jPanel3, "CONTENT");
+        leftWaitjPanel.add(nWaitingPanel1, "WAIT");
+
+        leftPanel.add(leftWaitjPanel, java.awt.BorderLayout.CENTER);
+
+        jToolBar2.setFloatable(false);
+        jToolBar2.setRollover(true);
+        jToolBar2.setMaximumSize(new java.awt.Dimension(66, 32));
+        jToolBar2.setMinimumSize(new java.awt.Dimension(66, 32));
+        jToolBar2.setPreferredSize(new java.awt.Dimension(66, 32));
+
+        stateRefreshBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/nazca/inside/guide/client/ui/res/reset-16.png"))); // NOI18N
+        stateRefreshBtn.setText("刷新");
+        stateRefreshBtn.setFocusable(false);
+        stateRefreshBtn.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        stateRefreshBtn.setPreferredSize(new java.awt.Dimension(58, 30));
+        stateRefreshBtn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        stateRefreshBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stateRefreshBtnActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(stateRefreshBtn);
+
+        leftPanel.add(jToolBar2, java.awt.BorderLayout.NORTH);
+
+        jSplitPane1.setLeftComponent(leftPanel);
+
+        rightPanel.setMinimumSize(new java.awt.Dimension(0, 0));
+        rightPanel.setPreferredSize(new java.awt.Dimension(0, 0));
+        rightPanel.setLayout(new java.awt.BorderLayout());
+
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+        jToolBar1.setMargin(new java.awt.Insets(2, 5, 2, 5));
+
+        refreshBtu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/nazca/inside/guide/client/ui/res/reset-16.png"))); // NOI18N
+        refreshBtu.setText("刷新");
+        refreshBtu.setFocusable(false);
+        refreshBtu.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        refreshBtu.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        refreshBtu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        refreshBtu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshBtuActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(refreshBtu);
+
+        addBtu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/nazca/inside/guide/client/ui/res/add_16.png"))); // NOI18N
+        addBtu.setText("增加");
+        addBtu.setFocusable(false);
+        addBtu.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        addBtu.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        addBtu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        addBtu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBtuActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(addBtu);
+
+        modifyBtu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/nazca/inside/guide/client/ui/res/mail-16.png"))); // NOI18N
+        modifyBtu.setText("修改");
+        modifyBtu.setFocusable(false);
+        modifyBtu.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        modifyBtu.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        modifyBtu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        modifyBtu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modifyBtuActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(modifyBtu);
+
+        deleteBtu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/nazca/inside/guide/client/ui/res/delete_16.png"))); // NOI18N
+        deleteBtu.setText("删除");
+        deleteBtu.setFocusable(false);
+        deleteBtu.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        deleteBtu.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        deleteBtu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        deleteBtu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtuActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(deleteBtu);
+
+        upBtu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/nazca/inside/guide/client/ui/res/logout-16.png"))); // NOI18N
+        upBtu.setText("上移");
+        upBtu.setFocusable(false);
+        upBtu.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        upBtu.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        upBtu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        upBtu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                upBtuActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(upBtu);
+
+        downBtu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/nazca/inside/guide/client/ui/res/login-16.png"))); // NOI18N
+        downBtu.setText("下移");
+        downBtu.setFocusable(false);
+        downBtu.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        downBtu.setMargin(new java.awt.Insets(2, 5, 2, 5));
+        downBtu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        downBtu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                downBtuActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(downBtu);
+
+        rightPanel.add(jToolBar1, java.awt.BorderLayout.NORTH);
+
+        rightWaitjPanel.setMinimumSize(new java.awt.Dimension(268, 129));
+        rightWaitjPanel.setLayout(new java.awt.CardLayout());
+        rightWaitjPanel.add(nWaitingPanel2, "WAIT");
+
+        antialiasedLabel1.setForeground(new java.awt.Color(153, 153, 153));
+        antialiasedLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        antialiasedLabel1.setText("暂无信息");
+        antialiasedLabel1.setFont(antialiasedLabel1.getFont().deriveFont(antialiasedLabel1.getFont().getStyle() | java.awt.Font.BOLD, 20));
+        rightWaitjPanel.add(antialiasedLabel1, "EMPTY");
+
+        messagejPanel.setAlignmentX(0.0F);
+        messagejPanel.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+
+        EntryTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        EntryTable.setInheritsPopupMenu(true);
+        jScrollPane2.setViewportView(EntryTable);
+
+        messagejPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+        messagejPanel.add(pagePane, java.awt.BorderLayout.SOUTH);
+
+        rightWaitjPanel.add(messagejPanel, "CONTENT");
+
+        rightPanel.add(rightWaitjPanel, java.awt.BorderLayout.CENTER);
+
+        jSplitPane1.setRightComponent(rightPanel);
+
+        add(jSplitPane1, java.awt.BorderLayout.CENTER);
+    }// </editor-fold>//GEN-END:initComponents
+
+//单独跳出一个可视页面
+    private void addBtuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtuActionPerformed
+        AddOrUpdateEntryPanel addEntryPane = new AddOrUpdateEntryPanel();
+        EntryTypeEnum newEntryTypeEnum=this.curEntryTypeEnum;
+        int index = EntryTable.getSelectedRow();//行
+        int localNumber=0;
+        if (index >= 0) {
+            index = EntryTable.convertRowIndexToModel(index);  
+            for(int i=0;i<resultLocal.size();i++){
+            if(resultLocal.get(i).getId().equals(entryTableModelByState.getData(index).getId())){
+            localNumber=i;
+            addEntryPane.addLocal(resultLocal,localNumber);//位置下拉框
+            }
+            }
+        
+        }
+         if (this.curEntryTypeEnum != null) {
+        addEntryPane.isSelectList(true);
+        addEntryPane.addType(this.curEntryTypeEnum);
+        }
+        else{
+        addEntryPane.isSelectList(false); 
+        }   
+        addEntryPane.setIsAdd(true);
+        Entry entry = addEntryPane.showMe(this.getRootPane());
+        if (entry != null) {
+            EntryList.clear();
+            int selectNum=0;//添加成功后默认选择行
+            for(int i=0;i<listResult.size();i++){                
+            if(curEntry.getGuideType()==listResult.get(i).getGuideType()){
+            selectNum=i;
+            listResult.get(0).setCount(String.valueOf(Integer.parseInt(listResult.get(0).getCount())+1));
+            System.out.println("全部增加数量"+ listResult.get(0).getCount());    
+            listResult.get(i).setCount(String.valueOf(Integer.parseInt(listResult.get(i).getCount())+1));
+            System.out.println("状态增加数量"+ listResult.get(i).getCount());
+            }            
+            }      
+           for (EntryTableModelWrap wrap : listResult) {
+                        if (wrap.getGuideType() == null) {
+                            NGroupListNodePane node1 = new NGroupListNodePane();
+                            node1.setLeftLabelText(ALL_List);  
+                            lineCount=String.valueOf(wrap.getCount());
+                            node1.setRightLabelText(String.valueOf(wrap.getCount()));                          
+                            EntryList.add(node1);
+                            CellItem<EntryTableModelWrap> cellItem1
+                                    = new CellItem(wrap);
+                            EntryList.addGroup(cellItem1, node1, 1000);       
+                        } else {
+                            //分类
+                            NGroupListNodePane node = new NGroupListNodePane();
+                            node.setLeftLabelText(wrap.getGuideType().toString());
+                            node.setRightLabelText(String.valueOf(wrap.getCount()));
+                            EntryList.add(node);
+                            CellItem<EntryTableModelWrap> cellItem
+                                    = new CellItem(wrap);
+                            EntryList.addGroup(cellItem, node, 1000);
+                        }
+                        
+                    } 
+            if(newEntryTypeEnum==null){
+            EntryList.setSelectedGroupOrItem((CellItem) EntryList.getGroupList().get(0));
+            }
+            else{
+            EntryList.setSelectedGroupOrItem((CellItem) EntryList.getGroupList().get(selectNum));
+            }      
+           EntryList.validate();
+           EntryList.repaint();          
+           refreshBtu.doClick();  
+        }
+    }//GEN-LAST:event_addBtuActionPerformed
+
+    private void refreshBtuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshBtuActionPerformed
+
+        if (this.curEntryTypeEnum != null) {
+            queryEntryByStateAgent.setState(this.curEntryTypeEnum, pagePane.getPageSession().getCurPageNum(), pagePane.getPageSession().getPageSize());
+            queryEntryByStateAgent.start();
+            entryByStateLocalAgent.setState(curEntryTypeEnum);
+            entryByStateLocalAgent.start();
+        } else {
+            queryEntrytAgent.setParam(pagePane.getPageSession().getCurPageNum(), pagePane.getPageSession().getPageSize());
+            queryEntrytAgent.start();
+            entrytLocalAgent.start();
+        }
+
+    }//GEN-LAST:event_refreshBtuActionPerformed
+
+    private void modifyBtuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyBtuActionPerformed
+
+        AddOrUpdateEntryPanel modifyEntyPanel = new AddOrUpdateEntryPanel();
+        EntryTypeEnum newEntryTypeEnum=this.curEntryTypeEnum;       
+       
+        if (this.curEntryTypeEnum != null) {
+        modifyEntyPanel.isSelectList(true);
+        modifyEntyPanel.setType(this.curEntryTypeEnum);
+        }
+        else{
+        modifyEntyPanel.isSelectList(false); 
+        }       
+        int index = EntryTable.getSelectedRow();//行
+        int localNumber=0;
+        if (index >= 0) {
+            index = EntryTable.convertRowIndexToModel(index);           
+            curEntry = entryTableModelByState.getData(index);     
+            for(int i=0;i<resultLocal.size();i++){
+            if(resultLocal.get(i).getId().equals(curEntry.getId())){
+            localNumber=i;
+            modifyEntyPanel.addLocal(resultLocal,localNumber);//位置下拉框
+            }
+            }
+          
+            modifyEntyPanel.addData(curEntry);
+        }
+        modifyEntyPanel.setIsAdd(false);
+        Entry entry = modifyEntyPanel.showMe(this.getRootPane());
+        if (entry!= null) { 
+//       entryTableModelByState.updateData(curEntry);                         
+       if(newEntryTypeEnum==null){
+           stateRefreshBtn.doClick();
+           refreshBtu.doClick();  
+       }
+       else{ 
+            refreshBtu.doClick();  
+//            EntryTable.getSelectionModel().setSelectionInterval(entry.getSortOrder()-1, entry.getSortOrder()-1);   
+       }
+        }
+    }//GEN-LAST:event_modifyBtuActionPerformed
+
+
+    private void deleteBtuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtuActionPerformed
+         EntryTypeEnum newEntryTypeEnum=this.curEntryTypeEnum;
+        int index = EntryTable.getSelectedRow();//行
+        if (index >= 0) {
+            index = EntryTable.convertRowIndexToModel(index);
+            curEntry = entryTableModelByState.getData(index);
+        }
+        deleteEntryAgent.setParam(curEntry.getId());
+        DeleteOperationPanel<String> deletePane
+                = new DeleteOperationPanel<>(deleteEntryAgent);
+        deletePane.configSingleDelete("项目", curEntry.getName());
+        String entry= deletePane.showMe(deleteBtu, null, "删除项目", 400, 150); 
+        if (entry != null) {     
+            EntryList.clear();
+            int selectNum=0;
+            for(int i=0;i<listResult.size();i++){  
+            if(curEntry.getGuideType()==listResult.get(i).getGuideType()){
+            selectNum=i;     
+            listResult.get(0).setCount(String.valueOf(Integer.parseInt(listResult.get(0).getCount())-1));
+            System.out.println("全部删除数量"+ listResult.get(0).getCount());    
+            listResult.get(i).setCount(String.valueOf(Integer.parseInt(listResult.get(i).getCount())-1));
+            System.out.println("状态删除数量"+ listResult.get(i).getCount());
+            }       
+            }      
+           for (EntryTableModelWrap wrap : listResult) {
+                        if (wrap.getGuideType() == null) {
+                            NGroupListNodePane node1 = new NGroupListNodePane();
+                            node1.setLeftLabelText(ALL_List);  
+                            lineCount=String.valueOf(wrap.getCount());
+                            node1.setRightLabelText(String.valueOf(wrap.getCount()));                          
+                            EntryList.add(node1);
+                            CellItem<EntryTableModelWrap> cellItem1
+                                    = new CellItem(wrap);
+                            EntryList.addGroup(cellItem1, node1, 1000);       
+                        } else {
+                            //分类
+                            NGroupListNodePane node = new NGroupListNodePane();
+                            node.setLeftLabelText(wrap.getGuideType().toString());
+                            node.setRightLabelText(String.valueOf(wrap.getCount()));
+                            EntryList.add(node);
+                            CellItem<EntryTableModelWrap> cellItem
+                                    = new CellItem(wrap);
+                            EntryList.addGroup(cellItem, node, 1000);
+                        }
+                        
+                    } 
+           if(pageCount-1!=0){
+             if(newEntryTypeEnum==null){
+            EntryList.setSelectedGroupOrItem((CellItem) EntryList.getGroupList().get(0));
+            }
+              else{
+            EntryList.setSelectedGroupOrItem((CellItem) EntryList.getGroupList().get(selectNum));
+            }     
+           EntryList.validate();
+           EntryList.repaint();           
+           refreshBtu.doClick();           
+           }
+           else{
+           stateRefreshBtn.doClick();
+           refreshBtu.doClick(); 
+           }
+        }
+    }//GEN-LAST:event_deleteBtuActionPerformed
+
+    private void upBtuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upBtuActionPerformed
+        Entry firEntry=null;
+        Entry twoEntry=null;
+        double sortOrder;
+        int index = EntryTable.getSelectedRow();//行
+        if (index >= 0) {
+            index = EntryTable.convertRowIndexToModel(index);
+            curEntry = entryTableModelByState.getData(index);
+        }
+        upEntryAgent=new UpEntryAgent();
+        if(index==1){      
+         sortOrder=entryTableModelByState.getData(index-1).getSortOrder()/2;
+         curEntry.setSortOrder(sortOrder);
+        }else{
+         sortOrder=(entryTableModelByState.getData(index-2).getSortOrder()+entryTableModelByState.getData(index-1).getSortOrder())/2;
+         curEntry.setSortOrder(sortOrder);     
+        }
+         upEntryAgent.setParam(curEntry);
+        SimpleOperationPanel<Entry> upPane = new SimpleOperationPanel<>(upEntryAgent);                     
+        upPane.configDeteleMsg("<html>确认要执行上移的操作吗？</html>",curEntry);
+        upPane.setIsUp(true);
+        Entry entry = upPane.showMe(upBtu, null, "上移项目", 400, 100); 
+        if (entry != null) {
+                entryList.set(index, entryTableModelByState.getData(index-1));
+                entryList.set(index-1, entryTableModelByState.getData(index));  
+                entryTableModelByState.setDatas(entryList);
+                EntryTable.getSelectionModel().setSelectionInterval(index-1, index-1); 
+                resultLocal.set(index-1, entryTableModelByState.getData(index-1));
+                resultLocal.set(index, entryTableModelByState.getData(index));   
+              
+        }
+        
+    }//GEN-LAST:event_upBtuActionPerformed
+    private void downBtuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downBtuActionPerformed
+        int index = EntryTable.getSelectedRow();//行
+        double sortOrder;
+        if (index >= 0) {
+            index = EntryTable.convertRowIndexToModel(index);
+            curEntry = entryTableModelByState.getData(index);
+        }      
+        downEntryAgent=new DownEntryAgent();
+        if(index==EntryTable.getRowCount()-2){
+         sortOrder=curEntry.getSortOrder()+1;
+         curEntry.setSortOrder(sortOrder);       
+        }
+        else{
+         sortOrder=(entryTableModelByState.getData(index+1).getSortOrder()+entryTableModelByState.getData(index+2).getSortOrder())/2;
+         curEntry.setSortOrder(sortOrder);   
+        }
+        downEntryAgent.setParam(curEntry);
+        SimpleOperationPanel<Entry> downPane = new SimpleOperationPanel<>(downEntryAgent);      
+        downPane.configDeteleMsg("<html>确认要执行下移的操作吗？</html>",curEntry);
+        downPane.setIsUp(false);
+        Entry entry = downPane.showMe(downBtu, null, "下移项目", 400, 100);
+
+        if (entry != null) {
+                entryList.set(index, entryTableModelByState.getData(index+1));
+                entryList.set(index+1, entryTableModelByState.getData(index));  
+                entryTableModelByState.setDatas(entryList);
+                EntryTable.getSelectionModel().setSelectionInterval(index+1, index+1);   
+                resultLocal.set(index+1, entryTableModelByState.getData(index+1));
+                resultLocal.set(index, entryTableModelByState.getData(index));           
+        }            
+
+        
+    }//GEN-LAST:event_downBtuActionPerformed
+
+    private void stateRefreshBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stateRefreshBtnActionPerformed
+
+        queryEntrytListAgent.start();
+    }//GEN-LAST:event_stateRefreshBtnActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.nazca.ui.NGroupList EntryList;
+    private javax.swing.JTable EntryTable;
+    private javax.swing.JButton addBtu;
+    private com.nazca.ui.AntialiasedLabel antialiasedLabel1;
+    private javax.swing.JButton deleteBtu;
+    private javax.swing.JButton downBtu;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JToolBar jToolBar2;
+    private javax.swing.JPanel leftPanel;
+    private javax.swing.JPanel leftWaitjPanel;
+    private javax.swing.JPanel messagejPanel;
+    private javax.swing.JButton modifyBtu;
+    private com.nazca.ui.NWaitingPanel nWaitingPanel1;
+    private com.nazca.ui.NWaitingPanel nWaitingPanel2;
+    private com.nazca.ui.pagination.PaginationPanel pagePane;
+    private javax.swing.JButton refreshBtu;
+    private javax.swing.JPanel rightPanel;
+    private javax.swing.JPanel rightWaitjPanel;
+    private javax.swing.JButton stateRefreshBtn;
+    private javax.swing.JButton upBtu;
+    // End of variables declaration//GEN-END:variables
+
+    private void initAgentAndListener() {
+
+        queryEntrytListAgent = new QueryEntrytListAgent();
+        queryEntrytListAgent.addListener(queryEntryListAgentListener);
+
+        queryEntrytAgent = new QueryEntrytAgent();
+        queryEntrytAgent.addListener(queryEntryAgentListener);
+        
+        entrytLocalAgent=new QueryEntrytLocalAgent();
+        entrytLocalAgent.addListener(queryEntryLocalAgentListener);
+        
+        entryByStateLocalAgent=new QueryEntryByStateLocalAgent();
+        entryByStateLocalAgent.addListener(queryEntryByStateLocalListener);
+
+        queryEntryByStateAgent = new QueryEntryByStateAgent();
+        queryEntryByStateAgent.addListener(queryEntryByStateListener);
+
+        deleteEntryAgent = new DeleteEntryAgent();
+        createEntryAgent = new CreateEntryAgent();
+        modifyEntryAgent = new ModifyEntryAgent();
+        deleteEntryAgent = new DeleteEntryAgent();
+        pagePane.addPaginationListener(new PaginationListener() {
+            @Override
+            public void onPageChanged(TablePageSession tps) {
+                refreshBtu.doClick();
+            }
+        });
+        EntryList.addListSelectionListener(new NListSelectionListener() {
+            @Override
+            public void valueChanged(final NListSelectionEvent e) {
+                if (!e.isAdjusting()) {
+                    setMessageBtnEnable(true);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            CellItem<EntryTableModelWrap> item = e.getNewItem();
+                            if (item != null) {
+                                curEntryTypeEnum = item.getT().getGuideType();  
+                            }
+                                refreshBtu.doClick();
+                        }
+                    });
+                }
+            }
+        });
+        EntryTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    curEntry = entryTableModelByState.getData(EntryTable.getSelectedRow());   
+                    if(curEntryTypeEnum==null){
+                         upBtu.setEnabled(false);
+                         downBtu.setEnabled(false);
+                    }
+                    else{
+                        if(EntryTable.getSelectedRow()==0){
+                        setUpBtnEnable(true);
+                        upBtu.setEnabled(false);
+                        }
+                        else if(EntryTable.getSelectedRow()==EntryTable.getRowCount()-1){
+                        setDownBtnEnable(true);
+                        downBtu.setEnabled(false);
+                        }
+                        else{
+                        setEnable(true);
+                        }
+                    }
+                }
+            }
+
+        });
+
+    }
+    
+     //根据类别查询位置下拉框   
+     private final AgentListener<List<Entry>> queryEntryByStateLocalListener
+                 = new AgentListener<List<Entry>>() {
+        @Override
+        public void onStarted(long seq) {
+        }
+
+        @Override
+        public void onSucceeded(List<Entry> result, long seq) {
+            resultLocal=result;
+        }
+
+        @Override
+        public void onFailed(String errMsg, int errCode, long seq) {
+        }
+               
+               };
+     //根据全部查询位置下拉框         
+    private final AgentListener<List<Entry>> queryEntryLocalAgentListener  
+               = new AgentListener<List<Entry>>() {
+        @Override
+        public void onStarted(long seq) {
+        }
+
+        @Override
+        public void onSucceeded(List<Entry> result, long seq) {
+            resultLocal=result;
+        }
+
+        @Override
+        public void onFailed(String errMsg, int errCode, long seq) {
+        }  
+               };
+
+    //根据状态查询
+    private AgentListener<PageResult<Entry>> queryEntryByStateListener
+            = new AgentListener<PageResult<Entry>>() {
+        @Override
+        public void onStarted(long seq) {
+            queryEntryListBySatetSeq = seq;
+            setMessageBtnEnable(false);
+            nWaitingPanel2.showWaitingMode("数据加载中，请稍后...");
+            nWaitingPanel2.setIndeterminate(true);
+            rightCard.show(CardLayoutWrapper.WAIT);
+        }
+        @Override
+        public void onSucceeded(PageResult<Entry> result, long seq) {
+            nWaitingPanel2.setIndeterminate(false);//关闭等待面板
+            if (queryEntryListBySatetSeq == seq) {
+                setEnable(true);
+                if (result != null) {
+                    entryList = result.getPageList();
+//                    resultLocal=result.getPageList();
+                    int totalCount = result.getTotalCount();                    
+                    int pageSize = result.getPageSize();
+                    pageCount=totalCount;
+                    entryTableModelByState.setDatas(entryList);
+                    rightCard.show(CardLayoutWrapper.CONTENT);
+                    EntryTable.getSelectionModel().setSelectionInterval(0, 0);
+                    pagePane.initPageButKeepSession(totalCount, pageSize);                
+                } else {
+                    addBtu.setEnabled(false);
+                    modifyBtu.setEnabled(false);
+                    deleteBtu.setEnabled(false);
+                    upBtu.setEnabled(false);
+                    downBtu.setEnabled(false);
+                    rightCard.show(CardLayoutWrapper.EMPTY);
+                }
+            }
+        }
+
+        @Override
+        public void onFailed(String errMsg, int errCode, long seq) {
+            if (seq == queryEntrySeq) {
+                setEnable(true);
+                rightCard.show(CardLayoutWrapper.WAIT);
+                nWaitingPanel2.showMsgMode(errMsg, errCode, NWaitingPanel.MSG_MODE_ERROR);
+                setMessageBtnEnable(false);
+
+            }
+
+        }
+    };
+
+    //左边列表监听
+    private AgentListener<List<EntryTableModelWrap>> queryEntryListAgentListener
+            = new AgentListener<List<EntryTableModelWrap>>() {
+        @Override
+        public void onStarted(long seq) {
+            queryEntryListSeq = seq;
+            setMessageBtnEnable(false);//禁用
+            nWaitingPanel1.showWaitingMode("数据加载中，请稍后...");
+            nWaitingPanel1.setIndeterminate(true);
+            leftCard.show(CardLayoutWrapper.WAIT);
+            nWaitingPanel2.showWaitingMode("数据加载中，请稍后...");
+            nWaitingPanel2.setIndeterminate(true);
+            rightCard.show(CardLayoutWrapper.WAIT);
+            EntryList.removeAll();
+        }
+
+        @Override   
+        public void onSucceeded(List<EntryTableModelWrap> result, long seq) {
+            if (queryEntryListSeq == seq) {
+                nWaitingPanel1.setIndeterminate(false);
+                if (result != null && !result.isEmpty()) {                   
+                    listResult=result;
+                    EntryList.clear();//防止重复
+                    setEnable(true);
+                    setMessageBtnEnable(true);
+                    //全部 
+                    for (EntryTableModelWrap wrap : listResult) {
+                        
+                        if (wrap.getGuideType() == null) {
+                            NGroupListNodePane node1 = new NGroupListNodePane();
+                            node1.setLeftLabelText(ALL_List);  
+                            lineCount=String.valueOf(wrap.getCount());
+                            node1.setRightLabelText(lineCount);                          
+                            EntryList.add(node1);
+                            CellItem<EntryTableModelWrap> cellItem1
+                                    = new CellItem(wrap);
+                            EntryList.addGroup(cellItem1, node1, 1000);       
+                        } else {
+                            //分类
+                            NGroupListNodePane node = new NGroupListNodePane();
+                            node.setLeftLabelText(wrap.getGuideType().toString());
+                            node.setRightLabelText(String.valueOf(wrap.getCount()));
+                            EntryList.add(node);
+                            CellItem<EntryTableModelWrap> cellItem
+                                    = new CellItem(wrap);
+                            EntryList.addGroup(cellItem, node, 1000);
+                        }
+                    } 
+                        EntryList.setSelectedGroupOrItem((CellItem) EntryList.getGroupList().get(0));//默认选项
+                        
+                    leftCard.show(CardLayoutWrapper.CONTENT);//清单页面 Layout Card Name--->CONTENT
+                } else {
+                    antialiasedLabel1.setText("暂无信息");
+                    rightCard.show(CardLayoutWrapper.EMPTY);
+                    setEnable(false);
+                    setMessageBtnEnable(false);
+                }
+            }
+        }
+
+        @Override
+        public void onFailed(String errMsg, int errCode, long seq) {
+            if (seq == queryEntryListSeq) {
+                leftCard.show(CardLayoutWrapper.WAIT);
+                nWaitingPanel1.showMsgMode(errMsg, errCode, NWaitingPanel.MSG_MODE_ERROR);
+                rightCard.show(CardLayoutWrapper.WAIT);
+                nWaitingPanel2.showMsgMode(errMsg, errCode, NWaitingPanel.MSG_MODE_ERROR);
+                setMessageBtnEnable(false);
+            }
+        }
+    };
+    //全部内容监听
+    private final AgentListener<PageResult<Entry>> queryEntryAgentListener
+            = new AgentListener<PageResult<Entry>>() {
+        @Override
+        public void onStarted(long seq) {
+            queryEntrySeq = seq;
+            setEnable(false);
+            nWaitingPanel2.showWaitingMode("数据加载中，请稍后...");
+            nWaitingPanel2.setIndeterminate(true);
+            rightCard.show(CardLayoutWrapper.WAIT);
+        }
+
+        @Override
+        public void onSucceeded(PageResult<Entry> result, long seq) {
+            nWaitingPanel2.setIndeterminate(false);
+            if (seq == queryEntrySeq) {
+                setEnableAll(true);
+                if (result != null) {
+                    entryList = result.getPageList();
+//                    resultLocal=result.getPageList();
+                    int totalCount = result.getTotalCount();
+                    int pageSize = result.getPageSize();
+                    entryTableModelByState.setDatas(entryList);
+                    rightCard.show(CardLayoutWrapper.CONTENT);  
+                    EntryTable.getSelectionModel().setSelectionInterval(0, 0);
+                    pagePane.initPageButKeepSession(totalCount, pageSize);
+
+                } else {
+                    addBtu.setEnabled(false);
+                    modifyBtu.setEnabled(false);
+                    deleteBtu.setEnabled(false);
+                    upBtu.setEnabled(false);
+                    downBtu.setEnabled(false);
+                    rightCard.show(CardLayoutWrapper.EMPTY);
+                }
+            }
+        }
+
+        @Override
+        public void onFailed(String errMsg, int errCode, long seq) {
+            if (seq == queryEntrySeq) {
+                setMessageBtnEnable(false);
+                rightCard.show(CardLayoutWrapper.WAIT);
+                nWaitingPanel2.showMsgMode(errMsg, errCode, NWaitingPanel.MSG_MODE_ERROR);
+                
+            }
+        }
+    };
+
+    @Override
+    public void onInit() {
+        setTabIcon(inactiveIcon);
+        queryEntrytListAgent.start();
+        EntryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+    @Override
+    public String getComponentUUID() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    @Override
+    public void onDestroy() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }   
+    @Override
+    public void onShow() {
+        setTabIcon(activeIcon);
+    }
+    @Override
+    public void onHide() {
+        setTabIcon(inactiveIcon);
+    }
+    private void setEnable(boolean flag) {
+        refreshBtu.setEnabled(flag);
+        addBtu.setEnabled(flag);
+        modifyBtu.setEnabled(flag);
+        deleteBtu.setEnabled(flag);
+        upBtu.setEnabled(flag);
+        downBtu.setEnabled(flag);
+        stateRefreshBtn.setEnabled(flag);
+    }
+    private void setEnableAll(boolean flag) {
+        refreshBtu.setEnabled(flag);
+        addBtu.setEnabled(flag);
+        modifyBtu.setEnabled(flag);
+        deleteBtu.setEnabled(flag);
+        stateRefreshBtn.setEnabled(flag);
+    }
+    private void setMessageBtnEnable(boolean flag) {
+        refreshBtu.setEnabled(flag);
+        addBtu.setEnabled(flag);
+        modifyBtu.setEnabled(flag);
+        deleteBtu.setEnabled(flag);
+        upBtu.setEnabled(flag);
+        downBtu.setEnabled(flag);
+    }   
+    private void setUpBtnEnable(boolean flag) {
+        refreshBtu.setEnabled(flag);
+        addBtu.setEnabled(flag);
+        modifyBtu.setEnabled(flag);
+        deleteBtu.setEnabled(flag);
+        downBtu.setEnabled(flag);
+        stateRefreshBtn.setEnabled(flag);
+    }
+    private void setDownBtnEnable(boolean flag) {
+        refreshBtu.setEnabled(flag);
+        addBtu.setEnabled(flag);
+        modifyBtu.setEnabled(flag);
+        deleteBtu.setEnabled(flag);
+        upBtu.setEnabled(flag);
+        stateRefreshBtn.setEnabled(flag);
+    }
+
+
+}

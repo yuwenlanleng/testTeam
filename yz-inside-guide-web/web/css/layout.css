@@ -1,0 +1,380 @@
+/*
+newcss.java
+
+Copyright(c) 2007-2016 by Yingzhi Tech
+All Rights Reserved
+
+Created at 2016-05-20 15:58:14
+*/
+/* 
+    Created on : May 20, 2016, 3:58:14 PM
+    Author     : 赵洪坤 <zhaohongkun@yzhtech.com>
+
+/* Table styling */
+
+body {
+    display: block;
+    border-collapse:collapse;
+    /*margin: 0 140px 0 auto;*/
+/*    width:100%;height:100%;*/
+/*    margin:auto 0px;padding:auto 0px;
+    text-align:center;*/
+}
+
+/*去掉超链接下划线*/
+a{
+    text-decoration:none;
+}
+#conten_div{
+    width: 1000px;
+    border-radius:4px;
+    margin: 150px auto 0px;
+    background-color: #FFF;
+}
+/*表格宽度*/
+#tab {
+    border-collapse:collapse;
+    width:100%;
+}
+
+/*单元格layout样式*/
+td {
+    /*	padding:7px 50px;*/
+    height:44px;
+    vertical-align:baseline;
+    border-bottom: #e8e8e8 solid 1PX;       
+}
+
+
+/* 共享页主标题样式 545   150px auto 0 auto*/
+.head{
+    margin:50px auto 0 auto;
+    padding:5px 30px 5px 425px;
+
+    width:745px;
+    font-size: 20px;
+    line-height:60px;
+    background: url('../img/insideguidelogo.png') no-repeat 385.5px;
+    border-top-left-radius:4px;
+    border-top-right-radius: 4px;
+
+}
+
+/* 小分类标题样式 */
+.head2 {
+    margin:0 auto 0 auto;
+    padding:50px 30px 0 76px;
+    width:894px;
+    background: url('../img/webicon.png') no-repeat 40px 48px ;
+    font-size: 20px;
+    text-align:center;vertical-align:middle;
+    font-weight:normal;
+}
+.head3 {
+    margin:0 auto 0 auto;
+    padding:52px 30px 0 76px;
+    width:894px;
+    background: url('../img/sysicon.png') no-repeat 40px 48px;
+    font-size: 20px;
+    font-weight:normal;
+}
+.head4 {
+    margin:0 auto 0 auto;
+    padding:50px 30px 0 76px;
+    width:894px;
+    background: url('../img/docicon.png') no-repeat 40px 48px;
+    font-size: 20px;
+    font-weight:normal;
+}
+
+/* 数据显示区的样式 */
+.content {
+    padding:20px 20px 19.9px 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 960px;
+}
+
+/* 最后一个表格数据显示区的样式 */
+.last_table_content {
+    padding:20px 20px 80px 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 960px;
+}
+
+/*body的背景图片*/
+#body {
+    background: url(../img/body.png) repeat-x;
+    background-size:cover;
+    font-family:"微软雅黑";
+}
+
+/*表格各列的样式*/
+.th1 {
+    padding:7px 0 7px 58px;
+    text-align:left;
+    border-bottom: #6cbfe7 solid 1PX; 
+    font-weight:normal;
+    width:23%;
+    white-space:nowrap;
+}
+
+.th2 {
+    /*padding:7px 50px;*/
+    text-align:left;
+    border-bottom: #6cbfe7 solid 1PX; 
+    font-weight:normal;
+    width:50%;
+}
+.th3 {
+    padding:7px 20px 7px 20px;
+    text-align:center;
+    border-bottom: #6cbfe7 solid 1PX; 
+    font-weight:normal;
+    width:260px;
+    text-align: center;
+    white-space:nowrap;
+}
+
+.th4 {
+    padding:7px 20px 7px 20px;
+    text-align:center;
+    border-bottom: #6cbfe7 solid 1PX; 
+    font-weight:normal;
+    width:260px;
+    white-space:nowrap;
+}
+.th5 {
+    padding:7px 50px 7px 50px;
+    text-align:center;
+    border-bottom: #6cbfe7 solid 1PX; 
+    font-weight:normal;
+    width:320px;
+    white-space:nowrap;
+
+}
+.td1,.td2,.td3{
+    padding:0 0 0 58px;
+    vertical-align: bottom;
+}
+.clearfix:after {
+    clear: both;
+    content: ' ';
+    display: block;
+    font-size: 0;
+    line-height: 0;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+}
+
+/*使移动端下载图标不换行*/
+#iosid{
+    white-space:nowrap;
+}
+
+#hrefimg{
+    width: 24px;
+    height: 24px;
+}
+/*单元格内容居中*/
+#th2id,#desid,#innerid,#iosid,#th3id,#th5id,#brid,#outerid{vertical-align: bottom;}
+
+/*适应纵向手机屏幕*/
+@media screen and (max-width: 600px){
+    #conten_div{
+        width: 460px;
+        border-radius:4px;
+        margin: 0px auto 0px;
+        background-color: #FFF;
+    }
+    #head{
+        margin: 0 auto 0 auto;
+        padding:5px 120px 5px 160px;
+        width:180px;
+        background: url('../img/insideguidelogo.png') no-repeat 116px;
+        background-color: #e8e8e8; 
+    }
+
+    #head2,#head3,#head4{
+        width:354px;
+        background-color: #ffffff;
+    }
+    #content{
+        width:420px;
+        background-color: #ffffff;
+    }
+    #th1id{
+        width: 60%;
+    }
+    #th2id,#desid,#innerid,#iosid,#th3id,#th5id,#brid{display:none;}
+}
+
+/*适应横向手机屏幕*/
+@media screen and (min-width: 600px) and (max-width: 700px) and (orientation: landscape) {
+    #conten_div{
+        width: 460px;
+        border-radius:4px;
+        margin: 0;
+        background-color: #FFF;
+    }
+    #head{
+        margin: 0 auto 0 auto;
+        padding:5px 120px 5px 260px;
+        width:280px;
+        background: url('../img/insideguidelogo.png') no-repeat 220px;
+        background-color: #e8e8e8; 
+    }
+
+    #head2,#head3,#head4{
+        width:554px;
+        background-color: #ffffff;
+    }
+    #content{
+        width:620px;
+        background-color: #ffffff;
+    }
+    #td1,#td2,#td3{
+        padding:0 0 0 78px;
+        vertical-align: bottom;
+    }
+    #th1id{
+        padding:7px 0 7px 78px;
+        width: 60%;
+
+    }
+    #th3id{
+        padding:7px 42px 7px 42px;
+        width: 60%;
+
+    }
+    #th2id,#desid,#innerid,#iosid,#th3id,#th5id,#brid{display:none;}
+}
+
+
+
+
+.head{     
+
+    height:50px;/*//标题*/
+
+}
+/*.page{width:1080px; height:752px}
+.scrool{width:15px; height:752px;background:white}
+.page,.scrool{float:left}*/
+.header {
+/*    background: pink;  */
+    width:1200px;
+    height:100%; overflow:hidden; margin:0 auto;
+    position:relative;
+    border-top:1px solid dodgerblue;
+    
+}
+.middler {
+    /*background: blue;*/   
+    width:1200px;
+    height:100%; overflow:hidden; margin:0 auto;
+    position:relative;
+    border-top:1px solid dodgerblue;
+/*    border-left: 1px solid dodgerblue;
+    border-right: 1px solid dodgerblue;*/
+}
+
+.footer {
+/*    background: orange;       */
+    width:1200px;
+   height:100%; overflow:hidden; margin:0 auto;
+    position:relative;
+   border-top:1px solid dodgerblue;
+} 
+/*<左边和右边得div*/
+.left{width:148px;background:white;border-right: 1px solid dodgerblue;text-align:center;display: table-cell; margin:0;
+height:100%; overflow:hidden; padding-bottom:9999px; margin-bottom:-9999px;
+}     
+.right{width:1050px;height:auto;background:buttonface}
+.left{float:left}
+.right{float:right}
+/*for循环的代码块*/
+#box{width:130px; height:190px;background:white; margin:15px}
+#box{float:left}
+
+#td1{
+    font-family:"微软雅黑";
+    font-size: 17px;
+    color:royalblue;
+
+}
+#desid{
+    font-family:"微软雅黑";
+    font-size: 12px;
+    color: black;
+
+}
+
+#before{
+    width:130px;
+    height:120px;
+    margin:0;
+    text-align:center;
+    vertical-align:middle;
+
+}
+#after{
+    background: #4B83EE;
+    width:130px;
+    height:60px;
+    margin:0;
+}
+
+/*下载和上网的代码块*/
+#one{width:64px; height:190px;text-align:center;vertical-align:middle;margin:0;padding-top:6px}
+#two{width:2px; height:40px; background:white;text-align:center;vertical-align:middle;margin-top:8px;padding-top:6px}
+#three{width:64px; height:190px;text-align:center;vertical-align:middle;margin:0;padding-top:6px}
+#one,#two,#three{float:left}
+
+/*#one1{width:64px; height:190px;text-align:center;vertical-align:middle;margin:0}
+#two1{width:2px; height:40px; background:white;text-align:center;vertical-align:middle;margin-top:8px}
+#three1{width:64px; height:190px;text-align:center;vertical-align:middle;margin:0}
+#one1,#two1,#three1{float:left}*/
+
+#one1{width:41px; height:190px;text-align:center;vertical-align:middle;margin:0;padding-top:6px}
+#two1{width:2px; height:40px; background:white;text-align:center;vertical-align:middle;margin-top:8px;padding-top:6px}
+#three1{width:42px; height:190px;text-align:center;vertical-align:middle;margin:0;padding-top:6px}
+#four1{width:42px; height:190px;text-align:center;vertical-align:middle;margin:0;padding-top:6px}
+#one1,#two1,#three1,#four1{float:left}
+
+#stitle{
+    font-family:"微软雅黑";
+    font-size: 20px;
+    color:royalblue;
+
+}
+#model{
+    margin:0 auto; width:140px; padding-top: 70px; 
+}
+
+#picture{
+    width:130px;
+    height:70px;
+    margin:0;
+    text-align:center;
+    vertical-align:middle;
+
+}
+#home{
+    width:100%;
+    height:100%;
+    margin:0 auto;
+    
+
+}
+#padd{
+    width:100%;
+    height:100%;
+/*    padding:1px 30px 10px 30px;*/
+    text-align:center;
+}
+html{
+    width:100%;height:100%;margin:auto 0px;padding:auto 0px;text-align:center;
+}
